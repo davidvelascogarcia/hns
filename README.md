@@ -1,9 +1,12 @@
+[![hns Homepage](https://img.shields.io/badge/hns-develop-orange.svg)](https://github.com/davidvelascogarcia/hns/tree/develop/programs) [![Latest Release](https://img.shields.io/github/tag/davidvelascogarcia/hns.svg?label=Latest%20Release)](https://github.com/davidvelascogarcia/hns/tags) [![Build Status](https://travis-ci.org/davidvelascogarcia/hns.svg?branch=develop)](https://travis-ci.org/davidvelascogarcia/hns)
+
 # HNS: Heuristic Navigation System (Python)
 
 - [Introduction](#introduction)
 - [Requirements](#requirements)
 - [Run](#run)
 - [YARP support](#yarp-support)
+- [Status](#status)
 
 
 ## Introduction
@@ -111,3 +114,12 @@ Additionally, note that in case of running on `windows 10`, if running on` Git B
 As has been seen, the system supports the `YARP` communications middleware, therefore, at each decision made by the planner, that is, ** UP **, ** DOWN **, ** RIGHT * *, ** LEFT ** and ** GOAL **, this value will be sent to the controller of the target system and will wait until it receives its execution response.
 
 The sending and receiving ports of `hns` are` /hns/controller:o` and `/hns/controller:i`, respectively.
+
+## Status
+
+## Status
+
+[![Build Status](https://travis-ci.org/davidvelascogarcia/hns.svg?branch=develop)](https://travis-ci.org/davidvelascogarcia/hns)
+
+[![Issues](https://img.shields.io/github/issues/davidvelascogarcia/hns.svg?label=Issues)](https://github.com/davidvelascogarcia/hns/issues)
+
