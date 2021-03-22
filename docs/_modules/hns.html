@@ -1,0 +1,1135 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>hns &mdash; HNS v1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HNS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../docs/hns.html">hns module</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HNS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>hns</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for hns</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">---------------------------------------------------</span>
+<span class="sd">Program: Heuristic Navigation System</span>
+<span class="sd">Type: Python</span>
+<span class="sd">Author: David Velasco Garcia @davidvelascogarcia</span>
+<span class="sd">---------------------------------------------------</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1"># Libraries</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">halo</span> <span class="kn">import</span> <span class="n">Halo</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">queue</span>
+<span class="kn">import</span> <span class="nn">yarp</span>
+
+
+<span class="c1"># Class Heuristic Navigation System</span>
+<div class="viewcode-block" id="HNS"><a class="viewcode-back" href="../docs/hns.html#hns.HNS">[docs]</a><span class="k">class</span> <span class="nc">HNS</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Build HNS object.</span>
+<span class="sd">        Prepare HALO decorator parameters.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Build Halo spinner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span> <span class="o">=</span> <span class="n">Halo</span><span class="p">(</span><span class="n">spinner</span><span class="o">=</span><span class="s1">&#39;dots&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Build default targets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_init_x</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_init_y</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_goal_x</span> <span class="o">=</span> <span class="mi">7</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_goal_y</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="c1"># Build actual coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_init_x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_init_y</span>
+
+    <span class="c1"># Function: get_platform</span>
+<div class="viewcode-block" id="HNS.get_platform"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.get_platform">[docs]</a>    <span class="k">def</span> <span class="nf">get_platform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get system platform and release.</span>
+
+<span class="sd">        :return: sys_platform: string, sys_release: string</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Get system configuration</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Detecting system and release version ...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">sys_platform</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
+        <span class="n">sys_release</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************************&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configuration detected:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************************&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Platform:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">sys_platform</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Release:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">sys_release</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">sys_platform</span><span class="p">,</span> <span class="n">sys_release</span></div>
+
+    <span class="c1"># Function: get_config</span>
+<div class="viewcode-block" id="HNS.get_config"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get config data. Select map dir, map and initial/goal locations.</span>
+
+<span class="sd">        :return: map: string, init_x: int, init_y: int, goal_x: int, goal_y: int</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Configure parser arguments</span>
+            <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+
+            <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dir&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;./../maps&#39;</span><span class="p">)</span>
+            <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--map&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;map11.csv&#39;</span><span class="p">)</span>
+            <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--init&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;2,2&quot;</span><span class="p">)</span>
+            <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--goal&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;21,19&quot;</span><span class="p">)</span>
+            <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--yarp&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--target&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;/robot/controller:i&quot;</span><span class="p">)</span>
+            <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--response&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;/robot/controller:o&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Parse input data</span>
+            <span class="n">parsed</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+            <span class="nb">dir</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">dir</span>
+            <span class="nb">map</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">map</span>
+            <span class="n">init</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">init</span>
+            <span class="n">goal</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">goal</span>
+            <span class="n">yarp_mode</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">yarp</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">target</span>
+            <span class="n">target_response</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">response</span>
+
+            <span class="c1"># Prepare full map path</span>
+            <span class="nb">map</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
+
+            <span class="c1"># Split initial location</span>
+            <span class="n">init</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+            <span class="n">init_x</span> <span class="o">=</span> <span class="n">init</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">init_y</span> <span class="o">=</span> <span class="n">init</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># Split goal location</span>
+            <span class="n">goal</span> <span class="o">=</span> <span class="n">goal</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+            <span class="n">goal_x</span> <span class="o">=</span> <span class="n">goal</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">goal_y</span> <span class="o">=</span> <span class="n">goal</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+
+            <span class="n">halo_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[ERROR] Error parsing parameters: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; ...</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">text_color</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">halo_message</span><span class="p">)</span>
+
+            <span class="nb">map</span> <span class="o">=</span> <span class="s2">&quot;./../maps/map3.csv&quot;</span>
+            <span class="n">init_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_init_x</span>
+            <span class="n">init_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_init_y</span>
+            <span class="n">goal_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_goal_x</span>
+            <span class="n">goal_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_goal_y</span>
+            <span class="n">yarp_mode</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="nb">map</span><span class="p">,</span> <span class="n">init_x</span><span class="p">,</span> <span class="n">init_y</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">,</span> <span class="n">yarp_mode</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">target_response</span></div>
+
+    <span class="c1"># Function: get_map</span>
+<div class="viewcode-block" id="HNS.get_map"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.get_map">[docs]</a>    <span class="k">def</span> <span class="nf">get_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get map and transform to 2D matrix.</span>
+
+<span class="sd">        :param map: string</span>
+<span class="sd">        :return: map: int</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Read CSV map with , delimiter and transform to matrix</span>
+        <span class="nb">map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="nb">map</span> <span class="o">=</span> <span class="nb">map</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">map</span></div>
+
+    <span class="c1"># Function: assign_targets</span>
+<div class="viewcode-block" id="HNS.assign_targets"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.assign_targets">[docs]</a>    <span class="k">def</span> <span class="nf">assign_targets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">init_x</span><span class="p">,</span> <span class="n">init_y</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Assign init and goal locations.</span>
+
+<span class="sd">        :param map: int</span>
+<span class="sd">        :param init_x: int</span>
+<span class="sd">        :param init_y: int</span>
+<span class="sd">        :param goal_x: int</span>
+<span class="sd">        :param goal_y: int</span>
+<span class="sd">        :return: map: int</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_location</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">init_x</span><span class="p">,</span> <span class="n">init_y</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+            <span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">init_x</span><span class="p">)][</span><span class="nb">int</span><span class="p">(</span><span class="n">init_y</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_location</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">init_x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">init_y</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_init_x</span><span class="p">)][</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_init_y</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_location</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_init_x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_init_y</span><span class="p">))</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_location</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+            <span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">goal_x</span><span class="p">)][</span><span class="nb">int</span><span class="p">(</span><span class="n">goal_y</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_goal_x</span><span class="p">)][</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_goal_y</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">4</span>
+
+        <span class="k">return</span> <span class="nb">map</span></div>
+
+    <span class="c1"># Function: check_location</span>
+<div class="viewcode-block" id="HNS.check_location"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.check_location">[docs]</a>    <span class="k">def</span> <span class="nf">check_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">x_coordinate</span><span class="p">,</span> <span class="n">y_coordinate</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Check if location is available.</span>
+
+<span class="sd">        :param map: int</span>
+<span class="sd">        :param x_coordinate: int</span>
+<span class="sd">        :param y_coordinate: int</span>
+<span class="sd">        :return: result: bool</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x_coordinate</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y_coordinate</span><span class="p">)]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">halo_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[ERROR] Error location is not available.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">text_color</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">halo_message</span><span class="p">)</span>
+
+                <span class="n">result</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">halo_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[ERROR] Error location out of the map: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; ...</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">text_color</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">halo_message</span><span class="p">)</span>
+
+            <span class="n">result</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+    <span class="c1"># Function: resume</span>
+<div class="viewcode-block" id="HNS.resume"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.resume">[docs]</a>    <span class="k">def</span> <span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_x</span><span class="p">,</span> <span class="n">init_y</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Print path planning resume.</span>
+
+<span class="sd">        :param init_x: int</span>
+<span class="sd">        :param init_y: int</span>
+<span class="sd">        :param goal_x: int</span>
+<span class="sd">        :param goal_y: int</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************************&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Resume:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************************&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Init coordinates:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coordinate X: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">init_x</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coordinate Y: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">init_y</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Goal coordinates:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coordinate X: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">goal_x</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coordinate Y: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">goal_y</span><span class="p">))</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">**************************************************************************&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Map:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************************&quot;</span><span class="p">)</span></div>
+
+    <span class="c1"># Function: show_map</span>
+<div class="viewcode-block" id="HNS.show_map"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.show_map">[docs]</a>    <span class="k">def</span> <span class="nf">show_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Show map with pretty format.</span>
+
+<span class="sd">        :param map: int</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">pretty_map</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
+        <span class="n">pretty_map</span> <span class="o">=</span> <span class="n">pretty_map</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">pretty_map</span> <span class="o">=</span> <span class="n">pretty_map</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;||&quot;</span><span class="p">)</span>
+        <span class="n">pretty_map</span> <span class="o">=</span> <span class="n">pretty_map</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="n">pretty_map</span> <span class="o">=</span> <span class="n">pretty_map</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">)</span>
+        <span class="n">pretty_map</span> <span class="o">=</span> <span class="n">pretty_map</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">pretty_map</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span></div>
+
+    <span class="c1"># Function: analyze</span>
+<div class="viewcode-block" id="HNS.analyze"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.analyze">[docs]</a>    <span class="k">def</span> <span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Analyze map status.</span>
+
+<span class="sd">        :param map: int</span>
+<span class="sd">        :param coordinate_x: int</span>
+<span class="sd">        :param coordinate_y: int</span>
+<span class="sd">        :return: up_status: int, down_status: int, right_status: int, left_status: int</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Analyze up position</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">up_status</span> <span class="o">=</span> <span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)]</span>
+
+        <span class="c1"># If error because it´s out of the map, set as obstacle</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">up_status</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+
+        <span class="c1"># Analyze down position</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">down_status</span> <span class="o">=</span> <span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)]</span>
+
+        <span class="c1"># If error because it´s out of the map, set as obstacle</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">down_status</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+
+        <span class="c1"># Analyze right position</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">right_status</span> <span class="o">=</span> <span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)][</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># If error because it´s out of the map, set as obstacle</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">right_status</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+
+        <span class="c1"># Analyze left position</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">left_status</span> <span class="o">=</span> <span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)][</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># If error because it´s out of the map, set as obstacle</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">left_status</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+
+        <span class="k">return</span> <span class="n">up_status</span><span class="p">,</span> <span class="n">down_status</span><span class="p">,</span> <span class="n">right_status</span><span class="p">,</span> <span class="n">left_status</span></div>
+
+    <span class="c1"># Function: update_location</span>
+<div class="viewcode-block" id="HNS.update_location"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.update_location">[docs]</a>    <span class="k">def</span> <span class="nf">update_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Update actual coordinates.</span>
+
+<span class="sd">        :param coordinate_x: int</span>
+<span class="sd">        :param coordinate_y: int</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_x</span> <span class="o">=</span> <span class="n">coordinate_x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_y</span> <span class="o">=</span> <span class="n">coordinate_y</span>
+
+        <span class="k">return</span> <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span></div>
+
+    <span class="c1"># Function: clear_previous_location</span>
+<div class="viewcode-block" id="HNS.clear_previous_location"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.clear_previous_location">[docs]</a>    <span class="k">def</span> <span class="nf">clear_previous_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Clear previous location in map.</span>
+
+<span class="sd">        :param map: int</span>
+<span class="sd">        :param coordinate_x: int</span>
+<span class="sd">        :param coordinate_y: int</span>
+<span class="sd">        :return: map: int</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)][</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)][</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Singular point.&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)][</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="k">return</span> <span class="nb">map</span></div>
+
+    <span class="c1"># Function: update_map</span>
+<div class="viewcode-block" id="HNS.update_map"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.update_map">[docs]</a>    <span class="k">def</span> <span class="nf">update_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Update map.</span>
+
+<span class="sd">        :param map: int</span>
+<span class="sd">        :param coordinate_x: int</span>
+<span class="sd">        :param coordinate_y: int</span>
+<span class="sd">        :return: map: int</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)][</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)][</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Singular point.&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)][</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="k">return</span> <span class="nb">map</span></div>
+
+    <span class="c1"># Function: get_distance</span>
+<div class="viewcode-block" id="HNS.get_distance"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.get_distance">[docs]</a>    <span class="k">def</span> <span class="nf">get_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get distance to goal with and without direction.</span>
+
+<span class="sd">        :param coordinate_x: int</span>
+<span class="sd">        :param coordinate_y: int</span>
+<span class="sd">        :param goal_x: int</span>
+<span class="sd">        :param goal_y: int</span>
+<span class="sd">        :return: distance_x: int, distance_y: int, abs_distance_x: int, abs_distance_y: int</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">distance_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">goal_x</span><span class="p">)</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)</span>
+        <span class="n">distance_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">goal_y</span><span class="p">)</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)</span>
+
+        <span class="n">abs_distance_x</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">distance_x</span><span class="p">)</span>
+        <span class="n">abs_distance_y</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">distance_y</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">distance_x</span><span class="p">,</span> <span class="n">distance_y</span><span class="p">,</span> <span class="n">abs_distance_x</span><span class="p">,</span> <span class="n">abs_distance_y</span></div>
+
+    <span class="c1"># Function: take_decision</span>
+<div class="viewcode-block" id="HNS.take_decision"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.take_decision">[docs]</a>    <span class="k">def</span> <span class="nf">take_decision</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">up</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">distance_x</span><span class="p">,</span> <span class="n">distance_y</span><span class="p">,</span> <span class="n">abs_distance_x</span><span class="p">,</span> <span class="n">abs_distance_y</span><span class="p">,</span> <span class="n">buffer</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Take decision. Preference higher distance sense, second higher distance sense, second higher distance invert sense, higher distance invserse sense.</span>
+
+<span class="sd">        :param buffer: queue</span>
+<span class="sd">        :param up: int</span>
+<span class="sd">        :param down: int</span>
+<span class="sd">        :param right: int</span>
+<span class="sd">        :param left: int</span>
+<span class="sd">        :param distance_x: int</span>
+<span class="sd">        :param distance_y: int</span>
+<span class="sd">        :param abs_distance_x: int</span>
+<span class="sd">        :param abs_distance_y: int</span>
+<span class="sd">        :return: command: string:, buffer: queue</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Init command</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;NONE&quot;</span>
+
+        <span class="c1"># Priority:</span>
+        <span class="c1"># If vertical distance is bigger than horizontal try to do vertical move</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">abs_distance_x</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">abs_distance_y</span><span class="p">)):</span>
+            <span class="c1"># If goal point is up try to go up</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">distance_x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="c1"># If space is free or is goal</span>
+                <span class="k">if</span> <span class="p">((</span><span class="n">up</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">up</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                    <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;UP&quot;</span>
+
+                <span class="c1"># If is an obstacle try to go second priority</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># If goal is left</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">distance_y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="p">((</span><span class="n">left</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">left</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                            <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;LEFT&quot;</span>
+
+                        <span class="c1"># If second priority it´s not available try to go to third tha is different direction</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="p">((</span><span class="n">right</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">right</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;RIGHT&quot;</span>
+
+                            <span class="c1"># If third priority it´s not free try to go to the last priority</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="p">((</span><span class="n">down</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">down</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                    <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;DOWN&quot;</span>
+
+                    <span class="c1"># If goal is right</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">((</span><span class="n">right</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">right</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                            <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;RIGHT&quot;</span>
+
+                        <span class="c1"># If second priority it´s not available try to go to third tha is different direction</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="p">((</span><span class="n">left</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">left</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;LEFT&quot;</span>
+                            <span class="c1"># If third priority it´s not free try to go to the last priority</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="p">((</span><span class="n">down</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">down</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                    <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;DOWN&quot;</span>
+
+            <span class="c1"># If goal point is down</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">((</span><span class="n">down</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">down</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                    <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;DOWN&quot;</span>
+
+                <span class="c1"># If is an obstacle try to go second priority</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># If goal point is left</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">distance_y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="p">((</span><span class="n">left</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">left</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                            <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;LEFT&quot;</span>
+
+                        <span class="c1"># If second priority it´s not available try to go to third tha is different direction</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="p">((</span><span class="n">right</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">right</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;RIGHT&quot;</span>
+
+                            <span class="c1"># If third priority it´s not free try to go to the last priority</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="p">((</span><span class="n">up</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">up</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                    <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;UP&quot;</span>
+
+                    <span class="c1"># If goal point is right</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">((</span><span class="n">right</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">right</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                            <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;RIGHT&quot;</span>
+
+                        <span class="c1"># If second priority it´s not available try to go to third tha is different direction</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="p">((</span><span class="n">left</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">left</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;LEFT&quot;</span>
+
+                            <span class="c1"># If third priority it´s not free try to go to the last priority</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="p">((</span><span class="n">up</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">up</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                    <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;UP&quot;</span>
+
+        <span class="c1"># If horizontal distance is bigger than vertical try to go in horizontal move</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If goal point is left</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">distance_y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">((</span><span class="n">left</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">left</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                    <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;LEFT&quot;</span>
+
+                <span class="c1"># If is an obstacle try to go second priority</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># If goal point is up</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">distance_x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="p">((</span><span class="n">up</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">up</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                            <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;UP&quot;</span>
+
+                        <span class="c1"># If second priority it´s not available try to go to third tha is different direction</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="p">((</span><span class="n">down</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">down</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;DOWN&quot;</span>
+
+                            <span class="c1"># If third priority it´s not free try to go to the last priority</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="p">((</span><span class="n">right</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">right</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                    <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;RIGHT&quot;</span>
+
+                    <span class="c1"># If goal point is down</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">((</span><span class="n">down</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">down</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                            <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;DOWN&quot;</span>
+
+                        <span class="c1"># If second priority it´s not available try to go to third tha is different direction</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="p">((</span><span class="n">up</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">up</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;UP&quot;</span>
+
+                            <span class="c1"># If third priority it´s not free try to go to the last priority</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="p">((</span><span class="n">right</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">right</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                    <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;RIGHT&quot;</span>
+
+            <span class="c1"># If goal point is right</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">((</span><span class="n">right</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">right</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                    <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;RIGHT&quot;</span>
+
+                <span class="c1"># If is an obstacle try to go second priority</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># If goal point is up</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">distance_x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="p">((</span><span class="n">up</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">up</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                            <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;UP&quot;</span>
+
+                        <span class="c1"># If second priority it´s not available try to go to third tha is different direction</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="p">((</span><span class="n">down</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">down</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;DOWN&quot;</span>
+
+                            <span class="c1"># If third priority it´s not free try to go to the last priority</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="p">((</span><span class="n">left</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">left</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                    <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;LEFT&quot;</span>
+
+                    <span class="c1"># If goal point is down</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">((</span><span class="n">down</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">down</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                            <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;DOWN&quot;</span>
+
+                        <span class="c1"># If second priority it´s not available try to go to third tha is different direction</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="p">((</span><span class="n">up</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">up</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;UP&quot;</span>
+
+                            <span class="c1"># If third priority it´s not free try to go to the last priority</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="p">((</span><span class="n">right</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">right</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)):</span>
+                                    <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;LEFT&quot;</span>
+
+        <span class="c1"># Set command into queue buffer</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">command</span><span class="p">)</span></div>
+
+    <span class="c1"># Function: move</span>
+<div class="viewcode-block" id="HNS.move"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.move">[docs]</a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Move system with decision planned.</span>
+
+<span class="sd">        :param map: int</span>
+<span class="sd">        :param command: string</span>
+<span class="sd">        :param coordinate_x: int</span>
+<span class="sd">        :param coordinate_y: int</span>
+<span class="sd">        :return: map: int</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="nb">map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_previous_location</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;UP&quot;</span><span class="p">:</span>
+            <span class="n">coordinate_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">coordinate_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;DOWN&quot;</span><span class="p">:</span>
+            <span class="n">coordinate_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">coordinate_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;RIGHT&quot;</span><span class="p">:</span>
+            <span class="n">coordinate_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)</span>
+            <span class="n">coordinate_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;LEFT&quot;</span><span class="p">:</span>
+            <span class="n">coordinate_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)</span>
+            <span class="n">coordinate_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_location</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">)</span>
+        <span class="nb">map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_map</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">map</span><span class="p">,</span> <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span></div>
+
+    <span class="c1"># Function: goal_achieved</span>
+<div class="viewcode-block" id="HNS.goal_achieved"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.goal_achieved">[docs]</a>    <span class="k">def</span> <span class="nf">goal_achieved</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Goal achived message.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">halo_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[INFO] Goal achieved</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">text_color</span> <span class="o">=</span> <span class="s2">&quot;green&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">halo_message</span><span class="p">)</span></div>
+
+    <span class="c1"># Function: goal_not_achieved</span>
+<div class="viewcode-block" id="HNS.goal_not_achieved"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.goal_not_achieved">[docs]</a>    <span class="k">def</span> <span class="nf">goal_not_achieved</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Goal not achived message</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">halo_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[WARN] Goal not achieved, limit steps.</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">text_color</span> <span class="o">=</span> <span class="s2">&quot;yellow&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">halo_message</span><span class="p">)</span></div>
+
+    <span class="c1"># Function: end_resume</span>
+<div class="viewcode-block" id="HNS.end_resume"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.end_resume">[docs]</a>    <span class="k">def</span> <span class="nf">end_resume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_time</span><span class="p">,</span> <span class="n">steps</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Print end resume.</span>
+
+<span class="sd">        :param init_time: datetime</span>
+<span class="sd">        :param steps: int</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Get end time</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="c1"># Compute elapsed time</span>
+        <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">init_time</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">**************************************************************************&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Resume: &quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************************</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Init time: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">init_time</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;End time: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end_time</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Elapsed time: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">elapsed_time</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Steps: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">steps</span><span class="p">))</span></div>
+
+    <span class="c1"># Function: yarp_connection</span>
+<div class="viewcode-block" id="HNS.yarp_connection"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.yarp_connection">[docs]</a>    <span class="k">def</span> <span class="nf">yarp_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hns_output_port</span><span class="p">,</span> <span class="n">hns_input_port</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">target_response</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Connect yarp ports.</span>
+
+<span class="sd">        :param hns_output_port: YarpDataPort</span>
+<span class="sd">        :param hns_input_port: YarpDataPort</span>
+<span class="sd">        :param input_target: string</span>
+<span class="sd">        :param output_target: string</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Connect yarp ports</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">hns_output_port</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">target_response</span><span class="p">,</span> <span class="n">hns_input_port</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">yarp</span><span class="o">.</span><span class="n">Network</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">hns_output_port</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="n">yarp</span><span class="o">.</span><span class="n">Network</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">target_response</span><span class="p">,</span> <span class="n">hns_input_port</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;conectado&quot;</span><span class="p">)</span></div>
+
+    <span class="c1"># Function: yarp_interaction</span>
+<div class="viewcode-block" id="HNS.yarp_interaction"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.yarp_interaction">[docs]</a>    <span class="k">def</span> <span class="nf">yarp_interaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hns_output_port</span><span class="p">,</span> <span class="n">hns_input_port</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Send command to system and wait until action is executed and received callback.</span>
+
+<span class="sd">        :param hns_output_port: YarpDataPort</span>
+<span class="sd">        :param hns_input_port: YarpDataPort</span>
+<span class="sd">        :param command: string</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">hns_output_port</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">hns_input_port</span><span class="o">.</span><span class="n">receive</span><span class="p">()</span>
+
+        <span class="n">halo_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[INFO] Response: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">text_color</span> <span class="o">=</span> <span class="s2">&quot;green&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">halo_message</span><span class="p">)</span></div>
+
+    <span class="c1"># Function: process</span>
+<div class="viewcode-block" id="HNS.process"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">init_x</span><span class="p">,</span> <span class="n">init_y</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">,</span> <span class="n">yarp_mode</span><span class="p">,</span> <span class="n">hns_output_port</span><span class="p">,</span> <span class="n">hns_input_port</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Process path planning.</span>
+
+<span class="sd">        :param yarp_mode: bool</span>
+<span class="sd">        :param hns_output_port: YarpDataPort</span>
+<span class="sd">        :param hns_input_port: YarpDataPort</span>
+<span class="sd">        :param map: int</span>
+<span class="sd">        :param init_x: int</span>
+<span class="sd">        :param init_y: int</span>
+<span class="sd">        :param goal_x: int</span>
+<span class="sd">        :param goal_y: int</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Get init time</span>
+        <span class="n">init_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="c1"># Update init location</span>
+        <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_location</span><span class="p">(</span><span class="n">init_x</span><span class="p">,</span> <span class="n">init_y</span><span class="p">)</span>
+
+        <span class="c1"># Control loop</span>
+        <span class="n">goal</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">steps</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">goal</span><span class="p">:</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">**************************************************************************&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Step: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">steps</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************************</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Get distances to goal</span>
+            <span class="n">distance_x</span><span class="p">,</span> <span class="n">distance_y</span><span class="p">,</span> <span class="n">abs_distance_x</span><span class="p">,</span> <span class="n">abs_distance_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">)</span>
+
+            <span class="c1"># Analyze environment</span>
+            <span class="n">up</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">)</span>
+
+            <span class="c1"># If goal achieved</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">abs_distance_x</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">abs_distance_y</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">goal_achieved</span><span class="p">()</span>
+
+                <span class="c1"># Exit loop</span>
+                <span class="n">goal</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># In process</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Build queue buffer</span>
+                <span class="n">buffer</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+
+                <span class="c1"># Build thread to take decision target</span>
+                <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">take_decision</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">up</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">distance_x</span><span class="p">,</span> <span class="n">distance_y</span><span class="p">,</span> <span class="n">abs_distance_x</span><span class="p">,</span> <span class="n">abs_distance_y</span><span class="p">,</span> <span class="n">buffer</span><span class="p">))</span>
+
+                <span class="c1"># Start thread</span>
+                <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+                <span class="c1"># Wait until thread ends</span>
+                <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+                <span class="c1"># Get take decison command from buffer</span>
+                <span class="n">command</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+                <span class="c1"># Move with selected command</span>
+                <span class="nb">map</span><span class="p">,</span> <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">)</span>
+
+                <span class="n">halo_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[INFO] Command: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">text_color</span> <span class="o">=</span> <span class="s2">&quot;blue&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">halo_message</span><span class="p">)</span>
+
+                <span class="c1"># If yarp mode, send command and wait callback</span>
+                <span class="k">if</span> <span class="n">yarp_mode</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">yarp_interaction</span><span class="p">(</span><span class="n">hns_output_port</span><span class="p">,</span> <span class="n">hns_input_port</span><span class="p">,</span> <span class="n">command</span><span class="p">)</span>
+
+                <span class="c1"># If limit steps</span>
+                <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">goal_not_achieved</span><span class="p">()</span>
+
+                    <span class="c1"># Exit loop</span>
+                    <span class="n">goal</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># Increase steps</span>
+            <span class="n">steps</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">+</span> <span class="mi">1</span>
+
+            <span class="c1"># Show map</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">show_map</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
+
+        <span class="c1"># If yarp mode, send GOAL command and wait callback</span>
+        <span class="k">if</span> <span class="n">yarp_mode</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">yarp_interaction</span><span class="p">(</span><span class="n">hns_output_port</span><span class="p">,</span> <span class="n">hns_input_port</span><span class="p">,</span> <span class="s2">&quot;GOAL&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Print end resume</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_resume</span><span class="p">(</span><span class="n">init_time</span><span class="p">,</span> <span class="n">steps</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># Class: yarp data port</span>
+<div class="viewcode-block" id="YarpDataPort"><a class="viewcode-back" href="../docs/hns.html#hns.YarpDataPort">[docs]</a><span class="k">class</span> <span class="nc">YarpDataPort</span><span class="p">:</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Class yarp data ports. Allow build sender and receiver ports and close them.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># Function: Constructor</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Build port object and open.</span>
+
+<span class="sd">        :param name: string</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Build Halo spinner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span> <span class="o">=</span> <span class="n">Halo</span><span class="p">(</span><span class="n">spinner</span><span class="o">=</span><span class="s1">&#39;dots&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Build port and bottle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yarp_port</span> <span class="o">=</span> <span class="n">yarp</span><span class="o">.</span><span class="n">Port</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yarp_bottle</span> <span class="o">=</span> <span class="n">yarp</span><span class="o">.</span><span class="n">Bottle</span><span class="p">()</span>
+
+        <span class="n">halo_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[INFO] Opening Yarp data port &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; ...</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">text_color</span> <span class="o">=</span> <span class="s2">&quot;yellow&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">halo_message</span><span class="p">)</span>
+
+        <span class="c1"># Open yarp port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yarp_port</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="c1"># Function: receive</span>
+<div class="viewcode-block" id="YarpDataPort.receive"><a class="viewcode-back" href="../docs/hns.html#hns.YarpDataPort.receive">[docs]</a>    <span class="k">def</span> <span class="nf">receive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Receive data from yarp port and return it.</span>
+
+<span class="sd">        :return: data: string</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">yarp_port</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yarp_bottle</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yarp_bottle</span><span class="o">.</span><span class="n">toString</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="n">halo_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[RECEIVED] Data received: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; at &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;.</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">text_color</span> <span class="o">=</span> <span class="s2">&quot;blue&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">halo_message</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
+    <span class="c1"># Function: send</span>
+<div class="viewcode-block" id="YarpDataPort.send"><a class="viewcode-back" href="../docs/hns.html#hns.YarpDataPort.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">        Send data with yarp port.</span>
+
+<span class="sd">        :param data: string</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">yarp_bottle</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yarp_bottle</span><span class="o">.</span><span class="n">addString</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yarp_port</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yarp_bottle</span><span class="p">)</span></div>
+
+    <span class="c1"># Function: close</span>
+<div class="viewcode-block" id="YarpDataPort.close"><a class="viewcode-back" href="../docs/hns.html#hns.YarpDataPort.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Close yarp port.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">halo_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[INFO] &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; port closed correctly.</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">text_color</span> <span class="o">=</span> <span class="s2">&quot;yellow&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">halo_message</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">yarp_port</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+
+
+<span class="c1"># Function: main</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../docs/hns.html#hns.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Process HNS.</span>
+
+<span class="sd">    :return: None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************************&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************************&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;                   Program: Heuristic Navigation System                   &quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;                     Author: David Velasco Garcia                         &quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;                             @davidvelascogarcia                          &quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************************&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************************&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Loading hns engine ...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Build HNS</span>
+    <span class="n">hns</span> <span class="o">=</span> <span class="n">HNS</span><span class="p">()</span>
+
+    <span class="c1"># Get platform</span>
+    <span class="n">sys_platform</span><span class="p">,</span> <span class="n">sys_release</span> <span class="o">=</span> <span class="n">hns</span><span class="o">.</span><span class="n">get_platform</span><span class="p">()</span>
+
+    <span class="c1"># Get config</span>
+    <span class="nb">map</span><span class="p">,</span> <span class="n">init_x</span><span class="p">,</span> <span class="n">init_y</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">,</span> <span class="n">yarp_mode</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">target_response</span> <span class="o">=</span> <span class="n">hns</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+
+    <span class="c1"># If yarp mode is True, init network, build ports and connect to targets</span>
+    <span class="k">if</span> <span class="n">yarp_mode</span><span class="p">:</span>
+        <span class="n">yarp</span><span class="o">.</span><span class="n">Network</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="n">hns_output_port</span> <span class="o">=</span> <span class="n">YarpDataPort</span><span class="p">(</span><span class="s2">&quot;/hns/controller:o&quot;</span><span class="p">)</span>
+        <span class="n">hns_input_port</span> <span class="o">=</span> <span class="n">YarpDataPort</span><span class="p">(</span><span class="s2">&quot;/hns/controller:i&quot;</span><span class="p">)</span>
+        <span class="n">hns</span><span class="o">.</span><span class="n">yarp_connection</span><span class="p">(</span><span class="n">hns_output_port</span><span class="p">,</span> <span class="n">hns_input_port</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">target_response</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">hns_output_port</span> <span class="o">=</span> <span class="s2">&quot;NULL&quot;</span>
+        <span class="n">hns_input_port</span> <span class="o">=</span> <span class="s2">&quot;NULL&quot;</span>
+
+    <span class="c1"># Get map</span>
+    <span class="nb">map</span> <span class="o">=</span> <span class="n">hns</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
+
+    <span class="c1"># Assign targets</span>
+    <span class="nb">map</span> <span class="o">=</span> <span class="n">hns</span><span class="o">.</span><span class="n">assign_targets</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">init_x</span><span class="p">,</span> <span class="n">init_y</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">)</span>
+
+    <span class="c1"># Print resume</span>
+    <span class="n">hns</span><span class="o">.</span><span class="n">resume</span><span class="p">(</span><span class="n">init_x</span><span class="p">,</span> <span class="n">init_y</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">)</span>
+
+    <span class="c1"># Show map</span>
+    <span class="n">hns</span><span class="o">.</span><span class="n">show_map</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
+
+    <span class="c1"># Process path planning</span>
+    <span class="n">hns</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">init_x</span><span class="p">,</span> <span class="n">init_y</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">,</span> <span class="n">yarp_mode</span><span class="p">,</span> <span class="n">hns_output_port</span><span class="p">,</span> <span class="n">hns_input_port</span><span class="p">)</span>
+
+    <span class="c1"># Close yarp ports</span>
+    <span class="k">if</span> <span class="n">yarp_mode</span><span class="p">:</span>
+        <span class="n">hns_output_port</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">hns_input_port</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">**************************************************************************&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Program finished&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************************&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">hns program finished correctly.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">exit_program</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span></div>
+
+
+<span class="c1"># Check main module and not a package</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calls main module</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">main</span><span class="p">()</span>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, David Velasco Garcia.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

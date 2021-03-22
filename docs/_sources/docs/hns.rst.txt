@@ -1,0 +1,7 @@
+hns module
+==========
+
+.. automodule:: hns
+   :members:
+   :undoc-members:
+   :show-inheritance:

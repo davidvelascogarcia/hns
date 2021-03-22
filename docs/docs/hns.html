@@ -1,0 +1,613 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>hns module &mdash; HNS v1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Welcome to HNS’s documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HNS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">hns module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#author-david-velasco-garcia-davidvelascogarcia">Author: David Velasco Garcia &#64;davidvelascogarcia</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HNS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>hns module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/docs/hns.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-hns">
+<span id="hns-module"></span><h1>hns module<a class="headerlink" href="#module-hns" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="author-david-velasco-garcia-davidvelascogarcia">
+<h2>Author: David Velasco Garcia &#64;davidvelascogarcia<a class="headerlink" href="#author-david-velasco-garcia-davidvelascogarcia" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="hns.HNS">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">hns.</span></code><code class="sig-name descname"><span class="pre">HNS</span></code><a class="reference internal" href="../_modules/hns.html#HNS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="hns.HNS.analyze">
+<code class="sig-name descname"><span class="pre">analyze</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.analyze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.analyze" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyze map status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>map</strong> – int</p></li>
+<li><p><strong>coordinate_x</strong> – int</p></li>
+<li><p><strong>coordinate_y</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>up_status: int, down_status: int, right_status: int, left_status: int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.assign_targets">
+<code class="sig-name descname"><span class="pre">assign_targets</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal_y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.assign_targets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.assign_targets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign init and goal locations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>map</strong> – int</p></li>
+<li><p><strong>init_x</strong> – int</p></li>
+<li><p><strong>init_y</strong> – int</p></li>
+<li><p><strong>goal_x</strong> – int</p></li>
+<li><p><strong>goal_y</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>map: int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.check_location">
+<code class="sig-name descname"><span class="pre">check_location</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_coordinate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_coordinate</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.check_location"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.check_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if location is available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>map</strong> – int</p></li>
+<li><p><strong>x_coordinate</strong> – int</p></li>
+<li><p><strong>y_coordinate</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>result: bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.clear_previous_location">
+<code class="sig-name descname"><span class="pre">clear_previous_location</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.clear_previous_location"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.clear_previous_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear previous location in map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>map</strong> – int</p></li>
+<li><p><strong>coordinate_x</strong> – int</p></li>
+<li><p><strong>coordinate_y</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>map: int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.end_resume">
+<code class="sig-name descname"><span class="pre">end_resume</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.end_resume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.end_resume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print end resume.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>init_time</strong> – datetime</p></li>
+<li><p><strong>steps</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.get_config">
+<code class="sig-name descname"><span class="pre">get_config</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.get_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get config data. Select map dir, map and initial/goal locations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>map: string, init_x: int, init_y: int, goal_x: int, goal_y: int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.get_distance">
+<code class="sig-name descname"><span class="pre">get_distance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordinate_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal_y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.get_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.get_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get distance to goal with and without direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coordinate_x</strong> – int</p></li>
+<li><p><strong>coordinate_y</strong> – int</p></li>
+<li><p><strong>goal_x</strong> – int</p></li>
+<li><p><strong>goal_y</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>distance_x: int, distance_y: int, abs_distance_x: int, abs_distance_y: int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.get_map">
+<code class="sig-name descname"><span class="pre">get_map</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.get_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.get_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get map and transform to 2D matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>map</strong> – string</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>map: int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.get_platform">
+<code class="sig-name descname"><span class="pre">get_platform</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.get_platform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.get_platform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get system platform and release.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sys_platform: string, sys_release: string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.goal_achieved">
+<code class="sig-name descname"><span class="pre">goal_achieved</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.goal_achieved"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.goal_achieved" title="Permalink to this definition">¶</a></dt>
+<dd><p>Goal achived message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.goal_not_achieved">
+<code class="sig-name descname"><span class="pre">goal_not_achieved</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.goal_not_achieved"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.goal_not_achieved" title="Permalink to this definition">¶</a></dt>
+<dd><p>Goal not achived message
+:return: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.move">
+<code class="sig-name descname"><span class="pre">move</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move system with decision planned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>map</strong> – int</p></li>
+<li><p><strong>command</strong> – string</p></li>
+<li><p><strong>coordinate_x</strong> – int</p></li>
+<li><p><strong>coordinate_y</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>map: int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.process">
+<code class="sig-name descname"><span class="pre">process</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yarp_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hns_output_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hns_input_port</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process path planning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>yarp_mode</strong> – bool</p></li>
+<li><p><strong>hns_output_port</strong> – YarpDataPort</p></li>
+<li><p><strong>hns_input_port</strong> – YarpDataPort</p></li>
+<li><p><strong>map</strong> – int</p></li>
+<li><p><strong>init_x</strong> – int</p></li>
+<li><p><strong>init_y</strong> – int</p></li>
+<li><p><strong>goal_x</strong> – int</p></li>
+<li><p><strong>goal_y</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.resume">
+<code class="sig-name descname"><span class="pre">resume</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal_y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.resume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.resume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print path planning resume.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>init_x</strong> – int</p></li>
+<li><p><strong>init_y</strong> – int</p></li>
+<li><p><strong>goal_x</strong> – int</p></li>
+<li><p><strong>goal_y</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.show_map">
+<code class="sig-name descname"><span class="pre">show_map</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.show_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.show_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show map with pretty format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>map</strong> – int</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.take_decision">
+<code class="sig-name descname"><span class="pre">take_decision</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">up</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">down</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_distance_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_distance_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.take_decision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.take_decision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take decision. Preference higher distance sense, second higher distance sense, second higher distance invert sense, higher distance invserse sense.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> – queue</p></li>
+<li><p><strong>up</strong> – int</p></li>
+<li><p><strong>down</strong> – int</p></li>
+<li><p><strong>right</strong> – int</p></li>
+<li><p><strong>left</strong> – int</p></li>
+<li><p><strong>distance_x</strong> – int</p></li>
+<li><p><strong>distance_y</strong> – int</p></li>
+<li><p><strong>abs_distance_x</strong> – int</p></li>
+<li><p><strong>abs_distance_y</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>command: string:, buffer: queue</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.update_location">
+<code class="sig-name descname"><span class="pre">update_location</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordinate_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.update_location"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.update_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update actual coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coordinate_x</strong> – int</p></li>
+<li><p><strong>coordinate_y</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.update_map">
+<code class="sig-name descname"><span class="pre">update_map</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.update_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.update_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>map</strong> – int</p></li>
+<li><p><strong>coordinate_x</strong> – int</p></li>
+<li><p><strong>coordinate_y</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>map: int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.yarp_connection">
+<code class="sig-name descname"><span class="pre">yarp_connection</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hns_output_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hns_input_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.yarp_connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.yarp_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect yarp ports.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hns_output_port</strong> – YarpDataPort</p></li>
+<li><p><strong>hns_input_port</strong> – YarpDataPort</p></li>
+<li><p><strong>input_target</strong> – string</p></li>
+<li><p><strong>output_target</strong> – string</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.HNS.yarp_interaction">
+<code class="sig-name descname"><span class="pre">yarp_interaction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hns_output_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hns_input_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.yarp_interaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.yarp_interaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send command to system and wait until action is executed and received callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hns_output_port</strong> – YarpDataPort</p></li>
+<li><p><strong>hns_input_port</strong> – YarpDataPort</p></li>
+<li><p><strong>command</strong> – string</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="hns.YarpDataPort">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">hns.</span></code><code class="sig-name descname"><span class="pre">YarpDataPort</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#YarpDataPort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.YarpDataPort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class yarp data ports. Allow build sender and receiver ports and close them.</p>
+<dl class="py method">
+<dt id="hns.YarpDataPort.close">
+<code class="sig-name descname"><span class="pre">close</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#YarpDataPort.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.YarpDataPort.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close yarp port.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.YarpDataPort.receive">
+<code class="sig-name descname"><span class="pre">receive</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#YarpDataPort.receive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.YarpDataPort.receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receive data from yarp port and return it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>data: string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.YarpDataPort.send">
+<code class="sig-name descname"><span class="pre">send</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#YarpDataPort.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.YarpDataPort.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send data with yarp port.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> – string</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="hns.main">
+<code class="sig-prename descclassname"><span class="pre">hns.</span></code><code class="sig-name descname"><span class="pre">main</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process HNS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to HNS’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, David Velasco Garcia.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
