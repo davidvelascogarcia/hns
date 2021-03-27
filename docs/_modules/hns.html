@@ -166,11 +166,14 @@
 
 <span class="c1"># Libraries</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">configparser</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">from</span> <span class="nn">halo</span> <span class="kn">import</span> <span class="n">Halo</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">pygame</span>
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">queue</span>
 <span class="kn">import</span> <span class="nn">yarp</span>
@@ -836,7 +839,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">halo_message</span><span class="p">)</span></div>
 
     <span class="c1"># Function: process</span>
-<div class="viewcode-block" id="HNS.process"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">init_x</span><span class="p">,</span> <span class="n">init_y</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">,</span> <span class="n">yarp_mode</span><span class="p">,</span> <span class="n">hns_output_port</span><span class="p">,</span> <span class="n">hns_input_port</span><span class="p">):</span>
+<div class="viewcode-block" id="HNS.process"><a class="viewcode-back" href="../docs/hns.html#hns.HNS.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">init_x</span><span class="p">,</span> <span class="n">init_y</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">,</span> <span class="n">yarp_mode</span><span class="p">,</span> <span class="n">hns_output_port</span><span class="p">,</span> <span class="n">hns_input_port</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">screen_width</span><span class="p">,</span> <span class="n">screen_height</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">wall</span><span class="p">,</span> <span class="n">robot</span><span class="p">,</span> <span class="n">sim_period</span><span class="p">,</span> <span class="n">init</span><span class="p">):</span>
 
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Process path planning.</span>
@@ -922,6 +925,9 @@
             <span class="c1"># Show map</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_map</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
 
+            <span class="c1"># Update PyGame screen</span>
+            <span class="n">init</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">screen_width</span><span class="p">,</span> <span class="n">screen_height</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">wall</span><span class="p">,</span> <span class="n">robot</span><span class="p">,</span> <span class="n">sim_period</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">,</span> <span class="n">init</span><span class="p">)</span>
+
         <span class="c1"># If yarp mode, send GOAL command and wait callback</span>
         <span class="k">if</span> <span class="n">yarp_mode</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">yarp_interaction</span><span class="p">(</span><span class="n">hns_output_port</span><span class="p">,</span> <span class="n">hns_input_port</span><span class="p">,</span> <span class="s2">&quot;GOAL&quot;</span><span class="p">)</span>
@@ -984,7 +990,6 @@
 <div class="viewcode-block" id="YarpDataPort.send"><a class="viewcode-back" href="../docs/hns.html#hns.YarpDataPort.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 
         <span class="sd">&#39;&#39;&#39;</span>
-
 <span class="sd">        Send data with yarp port.</span>
 
 <span class="sd">        :param data: string</span>
@@ -1009,6 +1014,197 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">halo_message</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">yarp_port</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+
+
+<span class="c1"># Class: Screen</span>
+<div class="viewcode-block" id="Screen"><a class="viewcode-back" href="../docs/hns.html#hns.Screen">[docs]</a><span class="k">class</span> <span class="nc">Screen</span><span class="p">:</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Class PyGame simulation screen.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># Function: Constructor</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Build PyGame screen.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pygame_screen</span> <span class="o">=</span> <span class="s2">&quot;NULL&quot;</span>
+
+        <span class="c1"># Build Halo spinner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span> <span class="o">=</span> <span class="n">Halo</span><span class="p">(</span><span class="n">spinner</span><span class="o">=</span><span class="s1">&#39;dots&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;./../resources/icon.png&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">robot_icon</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;./../resources/robot.png&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_icon</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;./../resources/start.png&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">goal_icon</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;./../resources/goal.png&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Function: config</span>
+<div class="viewcode-block" id="Screen.config"><a class="viewcode-back" href="../docs/hns.html#hns.Screen.config">[docs]</a>    <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get simulation parameters like screen size, colors and simulation time.</span>
+
+<span class="sd">        :return: screen_width: int, screen_height: int, background: int, wall: int, robot: int</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Control read from file</span>
+        <span class="n">read</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">while</span> <span class="n">read</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Get config data</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Getting config data ...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="n">configurationObject</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+                <span class="n">configurationObject</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;../config/config.ini&#39;</span><span class="p">)</span>
+                <span class="n">configurationObject</span><span class="o">.</span><span class="n">sections</span><span class="p">()</span>
+
+                <span class="n">screen_width</span> <span class="o">=</span> <span class="n">configurationObject</span><span class="p">[</span><span class="s1">&#39;Configuration&#39;</span><span class="p">][</span><span class="s1">&#39;screen-width&#39;</span><span class="p">]</span>
+                <span class="n">screen_height</span> <span class="o">=</span> <span class="n">configurationObject</span><span class="p">[</span><span class="s1">&#39;Configuration&#39;</span><span class="p">][</span><span class="s1">&#39;screen-height&#39;</span><span class="p">]</span>
+
+                <span class="n">background_color_r</span> <span class="o">=</span> <span class="n">configurationObject</span><span class="p">[</span><span class="s1">&#39;Background&#39;</span><span class="p">][</span><span class="s1">&#39;red&#39;</span><span class="p">]</span>
+                <span class="n">background_color_g</span> <span class="o">=</span> <span class="n">configurationObject</span><span class="p">[</span><span class="s1">&#39;Background&#39;</span><span class="p">][</span><span class="s1">&#39;green&#39;</span><span class="p">]</span>
+                <span class="n">background_color_b</span> <span class="o">=</span> <span class="n">configurationObject</span><span class="p">[</span><span class="s1">&#39;Background&#39;</span><span class="p">][</span><span class="s1">&#39;blue&#39;</span><span class="p">]</span>
+
+                <span class="n">wall_color_r</span> <span class="o">=</span> <span class="n">configurationObject</span><span class="p">[</span><span class="s1">&#39;Wall&#39;</span><span class="p">][</span><span class="s1">&#39;red&#39;</span><span class="p">]</span>
+                <span class="n">wall_color_g</span> <span class="o">=</span> <span class="n">configurationObject</span><span class="p">[</span><span class="s1">&#39;Wall&#39;</span><span class="p">][</span><span class="s1">&#39;green&#39;</span><span class="p">]</span>
+                <span class="n">wall_color_b</span> <span class="o">=</span> <span class="n">configurationObject</span><span class="p">[</span><span class="s1">&#39;Wall&#39;</span><span class="p">][</span><span class="s1">&#39;blue&#39;</span><span class="p">]</span>
+
+                <span class="n">robot_color_r</span> <span class="o">=</span> <span class="n">configurationObject</span><span class="p">[</span><span class="s1">&#39;Robot&#39;</span><span class="p">][</span><span class="s1">&#39;red&#39;</span><span class="p">]</span>
+                <span class="n">robot_color_g</span> <span class="o">=</span> <span class="n">configurationObject</span><span class="p">[</span><span class="s1">&#39;Robot&#39;</span><span class="p">][</span><span class="s1">&#39;green&#39;</span><span class="p">]</span>
+                <span class="n">robot_color_b</span> <span class="o">=</span> <span class="n">configurationObject</span><span class="p">[</span><span class="s1">&#39;Robot&#39;</span><span class="p">][</span><span class="s1">&#39;blue&#39;</span><span class="p">]</span>
+
+                <span class="n">sim_period</span> <span class="o">=</span> <span class="n">configurationObject</span><span class="p">[</span><span class="s1">&#39;Period&#39;</span><span class="p">][</span><span class="s1">&#39;sim-period&#39;</span><span class="p">]</span>
+
+                <span class="c1"># Build color vectors</span>
+                <span class="n">background</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">background_color_r</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">background_color_g</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">background_color_b</span><span class="p">))</span>
+                <span class="n">wall</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">wall_color_r</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">wall_color_g</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">wall_color_b</span><span class="p">))</span>
+                <span class="n">robot</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">robot_color_r</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">robot_color_g</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">robot_color_b</span><span class="p">))</span>
+
+                <span class="c1"># Convert sim period to float</span>
+                <span class="n">sim_period</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sim_period</span><span class="p">)</span>
+
+                <span class="c1"># Exit loop</span>
+                <span class="n">read</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">halo_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[ERROR] Sorry, config.ini not founded, waiting 4 seconds to the next check ...</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">text_color</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">halo_message</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="n">halo_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[INFO] Data obtained correctly.</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">text_color</span> <span class="o">=</span> <span class="s2">&quot;green&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">halo_response</span><span class="o">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">halo_message</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">screen_width</span><span class="p">,</span> <span class="n">screen_height</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">wall</span><span class="p">,</span> <span class="n">robot</span><span class="p">,</span> <span class="n">sim_period</span></div>
+
+    <span class="c1"># Function: get_map_size</span>
+<div class="viewcode-block" id="Screen.get_map_size"><a class="viewcode-back" href="../docs/hns.html#hns.Screen.get_map_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_map_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get map parameters. Number of rows and columns.</span>
+
+<span class="sd">        :param map: int</span>
+<span class="sd">        :return: rows: int, columns: int</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="nb">map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="nb">map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span></div>
+
+    <span class="c1"># Function: build_screen</span>
+<div class="viewcode-block" id="Screen.build_screen"><a class="viewcode-back" href="../docs/hns.html#hns.Screen.build_screen">[docs]</a>    <span class="k">def</span> <span class="nf">build_screen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen_width</span><span class="p">,</span> <span class="n">screen_height</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Build PyGame screen.</span>
+
+<span class="sd">        :param screen_height: int</span>
+<span class="sd">        :param screen_width: int</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pygame_screen</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_mode</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">screen_width</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">screen_height</span><span class="p">)),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_caption</span><span class="p">(</span><span class="s2">&quot;HNS&quot;</span><span class="p">)</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_icon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">icon</span><span class="p">)</span></div>
+
+    <span class="c1"># Function: simulate</span>
+<div class="viewcode-block" id="Screen.simulate"><a class="viewcode-back" href="../docs/hns.html#hns.Screen.simulate">[docs]</a>    <span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen_width</span><span class="p">,</span> <span class="n">screen_height</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">wall</span><span class="p">,</span> <span class="n">robot</span><span class="p">,</span> <span class="n">sim_period</span><span class="p">,</span> <span class="n">coordinate_x</span><span class="p">,</span> <span class="n">coordinate_y</span><span class="p">,</span> <span class="n">init</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Simulate PyGame screen.</span>
+
+<span class="sd">        :param screen_height: int</span>
+<span class="sd">        :param screen_width: int</span>
+<span class="sd">        :param map: int</span>
+<span class="sd">        :param rows: int</span>
+<span class="sd">        :param columns: int</span>
+<span class="sd">        :param background: int</span>
+<span class="sd">        :param wall: int</span>
+<span class="sd">        :param robot: int</span>
+<span class="sd">        :param sim_period: float</span>
+<span class="sd">        :param coordinate_x: int</span>
+<span class="sd">        :param coordinate_y: int</span>
+<span class="sd">        :return: init: bool</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="c1"># Draw all simulation map with background color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pygame_screen</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">background</span><span class="p">)</span>
+
+        <span class="c1"># Compute pixels</span>
+        <span class="n">x_pixel</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">screen_width</span><span class="p">)</span> <span class="o">/</span> <span class="nb">int</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">y_pixel</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">screen_height</span><span class="p">)</span> <span class="o">/</span> <span class="nb">int</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+
+        <span class="c1"># For each row in simulation map</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="c1"># For each column in row</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">columns</span><span class="p">):</span>
+
+                <span class="c1"># If simulation map value is 0, print with wall color</span>
+                <span class="k">if</span> <span class="nb">map</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pygame_screen</span><span class="p">,</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">x_pixel</span> <span class="o">*</span> <span class="n">column</span><span class="p">,</span> <span class="n">y_pixel</span> <span class="o">*</span> <span class="n">row</span><span class="p">,</span> <span class="n">x_pixel</span><span class="p">,</span> <span class="n">y_pixel</span><span class="p">))</span>
+
+                <span class="c1"># If simulation map value is 2, is past path</span>
+                <span class="k">if</span> <span class="nb">map</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pygame_screen</span><span class="p">,</span> <span class="p">(</span><span class="mi">38</span><span class="p">,</span> <span class="mi">166</span><span class="p">,</span> <span class="mi">240</span><span class="p">),</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">x_pixel</span> <span class="o">*</span> <span class="n">column</span><span class="p">,</span> <span class="n">y_pixel</span> <span class="o">*</span> <span class="n">row</span><span class="p">,</span> <span class="n">x_pixel</span><span class="p">,</span> <span class="n">y_pixel</span><span class="p">))</span>
+                    <span class="n">coordinate_x</span> <span class="o">=</span> <span class="n">column</span>
+                    <span class="n">coordinate_y</span> <span class="o">=</span> <span class="n">row</span>
+
+                <span class="c1"># If simulation map value is 3, print with start color</span>
+                <span class="k">if</span> <span class="nb">map</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pygame_screen</span><span class="p">,</span> <span class="p">(</span><span class="mi">169</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">38</span><span class="p">),</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">x_pixel</span> <span class="o">*</span> <span class="n">column</span><span class="p">,</span> <span class="n">y_pixel</span> <span class="o">*</span> <span class="n">row</span><span class="p">,</span> <span class="n">x_pixel</span><span class="p">,</span> <span class="n">y_pixel</span><span class="p">))</span>
+                    <span class="n">init_x</span> <span class="o">=</span> <span class="n">column</span>
+                    <span class="n">init_y</span> <span class="o">=</span> <span class="n">row</span>
+
+                <span class="c1"># If simulation map value is 4, print with goal color</span>
+                <span class="k">if</span> <span class="nb">map</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                    <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pygame_screen</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">87</span><span class="p">,</span> <span class="mi">51</span><span class="p">),</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">x_pixel</span> <span class="o">*</span> <span class="n">column</span><span class="p">,</span> <span class="n">y_pixel</span> <span class="o">*</span> <span class="n">row</span><span class="p">,</span> <span class="n">x_pixel</span><span class="p">,</span> <span class="n">y_pixel</span><span class="p">))</span>
+                    <span class="n">goal_x</span> <span class="o">=</span> <span class="n">column</span>
+                    <span class="n">goal_y</span> <span class="o">=</span> <span class="n">row</span>
+
+        <span class="c1"># Draw icons</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pygame_screen</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">robot_icon</span><span class="p">,</span> <span class="p">(</span><span class="n">x_pixel</span> <span class="o">*</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_x</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.15</span><span class="p">),</span> <span class="n">y_pixel</span> <span class="o">*</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">coordinate_y</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">x_pixel</span><span class="p">,</span> <span class="n">y_pixel</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pygame_screen</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">goal_icon</span><span class="p">,</span> <span class="p">(</span><span class="n">x_pixel</span> <span class="o">*</span> <span class="p">(</span><span class="n">goal_x</span> <span class="o">+</span> <span class="mf">0.25</span><span class="p">),</span> <span class="n">y_pixel</span> <span class="o">*</span> <span class="p">(</span><span class="n">goal_y</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pygame_screen</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_icon</span><span class="p">,</span> <span class="p">(</span><span class="n">x_pixel</span> <span class="o">*</span> <span class="p">(</span><span class="n">init_x</span> <span class="o">+</span> <span class="mf">0.12</span><span class="p">),</span> <span class="n">y_pixel</span> <span class="o">*</span> <span class="p">(</span><span class="n">init_y</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)))</span>
+
+        <span class="c1"># If first time</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">init</span><span class="p">:</span>
+            <span class="c1"># Display simulation map first time</span>
+            <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+
+            <span class="c1"># Set init</span>
+            <span class="n">init</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Update display</span>
+            <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sim_period</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">init</span></div></div>
 
 
 <span class="c1"># Function: main</span>
@@ -1062,8 +1258,24 @@
     <span class="c1"># Show map</span>
     <span class="n">hns</span><span class="o">.</span><span class="n">show_map</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
 
+    <span class="c1"># Build Screen</span>
+    <span class="n">screen</span> <span class="o">=</span> <span class="n">Screen</span><span class="p">()</span>
+
+    <span class="c1"># Get simulation config parameters</span>
+    <span class="n">screen_width</span><span class="p">,</span> <span class="n">screen_height</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">wall</span><span class="p">,</span> <span class="n">robot</span><span class="p">,</span> <span class="n">sim_period</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">config</span><span class="p">()</span>
+
+    <span class="c1"># Get number of rows and columns</span>
+    <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">get_map_size</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
+
+    <span class="c1"># Config build screen</span>
+    <span class="n">screen</span><span class="o">.</span><span class="n">build_screen</span><span class="p">(</span><span class="n">screen_width</span><span class="p">,</span> <span class="n">screen_height</span><span class="p">)</span>
+
+    <span class="c1"># Simulate screen</span>
+    <span class="n">init</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">screen_width</span><span class="p">,</span> <span class="n">screen_height</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">wall</span><span class="p">,</span> <span class="n">robot</span><span class="p">,</span> <span class="n">sim_period</span><span class="p">,</span> <span class="n">init_x</span><span class="p">,</span>
+             <span class="n">init_y</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
     <span class="c1"># Process path planning</span>
-    <span class="n">hns</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">init_x</span><span class="p">,</span> <span class="n">init_y</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">,</span> <span class="n">yarp_mode</span><span class="p">,</span> <span class="n">hns_output_port</span><span class="p">,</span> <span class="n">hns_input_port</span><span class="p">)</span>
+    <span class="n">hns</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">init_x</span><span class="p">,</span> <span class="n">init_y</span><span class="p">,</span> <span class="n">goal_x</span><span class="p">,</span> <span class="n">goal_y</span><span class="p">,</span> <span class="n">yarp_mode</span><span class="p">,</span> <span class="n">hns_output_port</span><span class="p">,</span> <span class="n">hns_input_port</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">screen_width</span><span class="p">,</span> <span class="n">screen_height</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">wall</span><span class="p">,</span> <span class="n">robot</span><span class="p">,</span> <span class="n">sim_period</span><span class="p">,</span> <span class="n">init</span><span class="p">)</span>
 
     <span class="c1"># Close yarp ports</span>
     <span class="k">if</span> <span class="n">yarp_mode</span><span class="p">:</span>

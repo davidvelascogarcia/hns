@@ -8,11 +8,14 @@ Author: David Velasco Garcia @davidvelascogarcia
 
 # Libraries
 import argparse
+import configparser
 import datetime
 from halo import Halo
 import numpy as np
 import pandas as pd
 import platform
+import pygame
+import time
 import threading
 import queue
 import yarp
@@ -678,7 +681,7 @@ class HNS:
         self.halo_response.succeed(halo_message)
 
     # Function: process
-    def process(self, map, init_x, init_y, goal_x, goal_y, yarp_mode, hns_output_port, hns_input_port):
+    def process(self, map, init_x, init_y, goal_x, goal_y, yarp_mode, hns_output_port, hns_input_port, screen, screen_width, screen_height, rows, columns, background, wall, robot, sim_period, init):
 
         '''
         Process path planning.
@@ -764,6 +767,9 @@ class HNS:
             # Show map
             self.show_map(map)
 
+            # Update PyGame screen
+            init = screen.simulate(screen_width, screen_height, map, rows, columns, background, wall, robot, sim_period, coordinate_y, coordinate_y, init)
+
         # If yarp mode, send GOAL command and wait callback
         if yarp_mode:
             self.yarp_interaction(hns_output_port, hns_input_port, "GOAL")
@@ -826,7 +832,6 @@ class YarpDataPort:
     def send(self, data):
 
         '''
-
         Send data with yarp port.
 
         :param data: string
@@ -851,6 +856,197 @@ class YarpDataPort:
         self.halo_response.warn(halo_message)
 
         self.yarp_port.close()
+
+
+# Class: Screen
+class Screen:
+
+    '''
+    Class PyGame simulation screen.
+    '''
+
+    # Function: Constructor
+    def __init__(self):
+
+        '''
+        Build PyGame screen.
+        '''
+
+        self.pygame_screen = "NULL"
+
+        # Build Halo spinner
+        self.halo_response = Halo(spinner='dots')
+
+        self.icon = pygame.image.load('./../resources/icon.png')
+        self.robot_icon = pygame.image.load('./../resources/robot.png')
+        self.start_icon = pygame.image.load('./../resources/start.png')
+        self.goal_icon = pygame.image.load('./../resources/goal.png')
+
+    # Function: config
+    def config(self):
+
+        '''
+        Get simulation parameters like screen size, colors and simulation time.
+
+        :return: screen_width: int, screen_height: int, background: int, wall: int, robot: int
+        '''
+
+        # Control read from file
+        read = True
+
+        while read:
+            try:
+                # Get config data
+                print("\nGetting config data ...\n")
+
+                configurationObject = configparser.ConfigParser()
+                configurationObject.read('../config/config.ini')
+                configurationObject.sections()
+
+                screen_width = configurationObject['Configuration']['screen-width']
+                screen_height = configurationObject['Configuration']['screen-height']
+
+                background_color_r = configurationObject['Background']['red']
+                background_color_g = configurationObject['Background']['green']
+                background_color_b = configurationObject['Background']['blue']
+
+                wall_color_r = configurationObject['Wall']['red']
+                wall_color_g = configurationObject['Wall']['green']
+                wall_color_b = configurationObject['Wall']['blue']
+
+                robot_color_r = configurationObject['Robot']['red']
+                robot_color_g = configurationObject['Robot']['green']
+                robot_color_b = configurationObject['Robot']['blue']
+
+                sim_period = configurationObject['Period']['sim-period']
+
+                # Build color vectors
+                background = (int(background_color_r), int(background_color_g), int(background_color_b))
+                wall = (int(wall_color_r), int(wall_color_g), int(wall_color_b))
+                robot = (int(robot_color_r), int(robot_color_g), int(robot_color_b))
+
+                # Convert sim period to float
+                sim_period = float(sim_period)
+
+                # Exit loop
+                read = False
+
+            except:
+                halo_message = "\n[ERROR] Sorry, config.ini not founded, waiting 4 seconds to the next check ...\n"
+                self.halo_response.text_color = "red"
+                self.halo_response.fail(halo_message)
+                time.sleep(4)
+
+        halo_message = "\n[INFO] Data obtained correctly.\n"
+        self.halo_response.text_color = "green"
+        self.halo_response.succeed(halo_message)
+
+        return screen_width, screen_height, background, wall, robot, sim_period
+
+    # Function: get_map_size
+    def get_map_size(self, map):
+
+        '''
+        Get map parameters. Number of rows and columns.
+
+        :param map: int
+        :return: rows: int, columns: int
+        '''
+
+        rows = map.shape[0]
+        columns = map.shape[1]
+
+        return rows, columns
+
+    # Function: build_screen
+    def build_screen(self, screen_width, screen_height):
+
+        '''
+        Build PyGame screen.
+
+        :param screen_height: int
+        :param screen_width: int
+        :return: None
+        '''
+
+        self.pygame_screen = pygame.display.set_mode((int(screen_width), int(screen_height)), 0, 32)
+        pygame.display.set_caption("HNS")
+        pygame.display.set_icon(self.icon)
+
+    # Function: simulate
+    def simulate(self, screen_width, screen_height, map, rows, columns, background, wall, robot, sim_period, coordinate_x, coordinate_y, init):
+
+        '''
+        Simulate PyGame screen.
+
+        :param screen_height: int
+        :param screen_width: int
+        :param map: int
+        :param rows: int
+        :param columns: int
+        :param background: int
+        :param wall: int
+        :param robot: int
+        :param sim_period: float
+        :param coordinate_x: int
+        :param coordinate_y: int
+        :return: init: bool
+        '''
+
+        pygame.display.update()
+        # Draw all simulation map with background color
+        self.pygame_screen.fill(background)
+
+        # Compute pixels
+        x_pixel = int(screen_width) / int(columns)
+        y_pixel = int(screen_height) / int(rows)
+
+        # For each row in simulation map
+        for row in range(rows):
+            # For each column in row
+            for column in range(columns):
+
+                # If simulation map value is 0, print with wall color
+                if map[row][column] == 0:
+                    pygame.draw.rect(self.pygame_screen, (200, 200, 200), pygame.Rect(x_pixel * column, y_pixel * row, x_pixel, y_pixel))
+
+                # If simulation map value is 2, is past path
+                if map[row][column] == 2:
+                    pygame.draw.rect(self.pygame_screen, (38, 166, 240), pygame.Rect(x_pixel * column, y_pixel * row, x_pixel, y_pixel))
+                    coordinate_x = column
+                    coordinate_y = row
+
+                # If simulation map value is 3, print with start color
+                if map[row][column] == 3:
+                    pygame.draw.rect(self.pygame_screen, (169, 240, 38), pygame.Rect(x_pixel * column, y_pixel * row, x_pixel, y_pixel))
+                    init_x = column
+                    init_y = row
+
+                # If simulation map value is 4, print with goal color
+                if map[row][column] == 4:
+                    pygame.draw.rect(self.pygame_screen, (255, 87, 51), pygame.Rect(x_pixel * column, y_pixel * row, x_pixel, y_pixel))
+                    goal_x = column
+                    goal_y = row
+
+        # Draw icons
+        self.pygame_screen.blit(self.robot_icon, (x_pixel * (int(coordinate_x) + 0.15), y_pixel * (int(coordinate_y) - 0.5), x_pixel, y_pixel))
+        self.pygame_screen.blit(self.goal_icon, (x_pixel * (goal_x + 0.25), y_pixel * (goal_y - 0.5)))
+        self.pygame_screen.blit(self.start_icon, (x_pixel * (init_x + 0.12), y_pixel * (init_y - 0.5)))
+
+        # If first time
+        if not init:
+            # Display simulation map first time
+            pygame.display.flip()
+
+            # Set init
+            init = True
+        else:
+            # Update display
+            pygame.display.update()
+
+        time.sleep(sim_period / 1000.0)
+
+        return init
 
 
 # Function: main
@@ -904,8 +1100,24 @@ def main():
     # Show map
     hns.show_map(map)
 
+    # Build Screen
+    screen = Screen()
+
+    # Get simulation config parameters
+    screen_width, screen_height, background, wall, robot, sim_period = screen.config()
+
+    # Get number of rows and columns
+    rows, columns = screen.get_map_size(map)
+
+    # Config build screen
+    screen.build_screen(screen_width, screen_height)
+
+    # Simulate screen
+    init = screen.simulate(screen_width, screen_height, map, rows, columns, background, wall, robot, sim_period, init_x,
+             init_y, False)
+
     # Process path planning
-    hns.process(map, init_x, init_y, goal_x, goal_y, yarp_mode, hns_output_port, hns_input_port)
+    hns.process(map, init_x, init_y, goal_x, goal_y, yarp_mode, hns_output_port, hns_input_port, screen, screen_width, screen_height, rows, columns, background, wall, robot, sim_period, init)
 
     # Close yarp ports
     if yarp_mode:

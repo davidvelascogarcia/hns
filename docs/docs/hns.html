@@ -354,7 +354,7 @@
 
 <dl class="py method">
 <dt id="hns.HNS.process">
-<code class="sig-name descname"><span class="pre">process</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yarp_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hns_output_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hns_input_port</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.process" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">process</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yarp_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hns_output_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hns_input_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wall</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#HNS.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.HNS.process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process path planning.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -500,6 +500,81 @@
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="hns.Screen">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">hns.</span></code><code class="sig-name descname"><span class="pre">Screen</span></code><a class="reference internal" href="../_modules/hns.html#Screen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.Screen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class PyGame simulation screen.</p>
+<dl class="py method">
+<dt id="hns.Screen.build_screen">
+<code class="sig-name descname"><span class="pre">build_screen</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">screen_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_height</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#Screen.build_screen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.Screen.build_screen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build PyGame screen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>screen_height</strong> – int</p></li>
+<li><p><strong>screen_width</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.Screen.config">
+<code class="sig-name descname"><span class="pre">config</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#Screen.config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.Screen.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get simulation parameters like screen size, colors and simulation time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>screen_width: int, screen_height: int, background: int, wall: int, robot: int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.Screen.get_map_size">
+<code class="sig-name descname"><span class="pre">get_map_size</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#Screen.get_map_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.Screen.get_map_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get map parameters. Number of rows and columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>map</strong> – int</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>rows: int, columns: int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hns.Screen.simulate">
+<code class="sig-name descname"><span class="pre">simulate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">screen_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wall</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hns.html#Screen.simulate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hns.Screen.simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulate PyGame screen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>screen_height</strong> – int</p></li>
+<li><p><strong>screen_width</strong> – int</p></li>
+<li><p><strong>map</strong> – int</p></li>
+<li><p><strong>rows</strong> – int</p></li>
+<li><p><strong>columns</strong> – int</p></li>
+<li><p><strong>background</strong> – int</p></li>
+<li><p><strong>wall</strong> – int</p></li>
+<li><p><strong>robot</strong> – int</p></li>
+<li><p><strong>sim_period</strong> – float</p></li>
+<li><p><strong>coordinate_x</strong> – int</p></li>
+<li><p><strong>coordinate_y</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>init: bool</p>
 </dd>
 </dl>
 </dd></dl>
