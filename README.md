@@ -50,6 +50,11 @@ Regarding the execution tests, this algorithm has been executed satisfactorily, 
 
 `hns` requires the following `python` libraries:
 
+* Install configparser
+```bash
+pip3 install configparser
+```
+
 * Install datetime
 ```bash
 pip3 install datetime
@@ -68,6 +73,11 @@ pip3 install numpy
 * Install pandas
 ```bash
 pip3 install pandas
+```
+
+* Install PyGame
+```bash
+pip3 install pygame
 ```
 
 To install all dependences directly:
